@@ -98,15 +98,7 @@ datos.
 -   Bucar mejorar tecnicas de código limpio.
 - Intruduccion a TYpescript.
 
-Infraestructura:
-
--   Base de datos en hosting AlwaysData
--   Backend y Frontend en Vercel.
-
-
 ## Instrucciones para la ejecusion
-
-
 
 -   descargar el repositorio.
 -   Restaura los módulos de node Js : **npm i**
