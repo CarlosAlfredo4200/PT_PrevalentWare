@@ -1,14 +1,20 @@
 import { PrismaClient } from '@prisma/client';
 import { UserInputError } from 'apollo-server-errors';
 
+/**
+ * Crear una instancia de Prisma Client
+ */
 
 const prisma = new PrismaClient();
 
 const resolversDef = {
     Query: {
+
+      /**
+       * @returns // Obtener todos los usuarios
+       */
       allUsers: async () => {
         try {
-          // Example of raw SQL query
           const data = await prisma.$queryRaw`SELECT * FROM "User"`;
           return data;
         } catch (error) {
@@ -17,6 +23,12 @@ const resolversDef = {
         }
       },
       
+      /**
+       * 
+       * @param parent 
+       * @param String
+       * @returns Obtener usuario por ID
+       */
       userById: async (parent, { id }) => {
         try {
           const user = await prisma.user.findUnique({
@@ -32,10 +44,17 @@ const resolversDef = {
           return user;
         } catch (error) {
           console.error("Error fetching user by id:", error);
-          throw error; // Lanza el error capturado directamente
+          throw error; 
         }
       },
   
+
+      /**
+       * 
+       * @param parent 
+       * @param String
+       * @returns Obtener usuario por correo electrónico
+       */
       userByEmail: async (parent, { email }) => {
         try {
           const data = await prisma.user.findUnique({
@@ -54,7 +73,11 @@ const resolversDef = {
           throw error;
         }
       },
-  
+      
+      /**
+       * 
+       * @returns Obtener todos los países para Admin y Manager
+       */
       allCountriesForAdminAndManager: async () => {
         try {
           const data = await prisma.country.findMany({
@@ -82,6 +105,13 @@ const resolversDef = {
         }
       },
   
+
+      /**
+       * 
+       * @param parent 
+       * @param String
+       * @returns Obtener monitoreos de usuario por correo electrónico y rango de tiempo
+       */
       userMonitoringsByEmailAndTimeRange: async (parent, { email, startTime, endTime }) => {
         try {
           const user = await prisma.user.findUnique({
@@ -113,7 +143,14 @@ const resolversDef = {
           throw error;
         }
       },
-  
+      
+
+      /**
+       * 
+       * @param parent 
+       * @param String 
+       * @returns Obtener los mejores usuarios en un rango de tiempo
+       */
       getTopUsersInTimeRange: async (parent, { startTime, endTime }) => {
         try {
           const data = await prisma.userMonitoring.findMany({
@@ -132,17 +169,15 @@ const resolversDef = {
             },
           });
       
-          // Extract userIds from the result, filter out null values
+          
           const userIds = data.map((item) => item.userId).filter((userId) => userId !== null);
           console.log(userIds);
           
-          // Check if there are any userIds to return
+          
           if (userIds.length > 0) {
             return userIds;
           } else {
-            // If no userIds are found, you may want to handle this case appropriately
-            // For example, return an empty array or throw an error
-            return []; // Or throw new Error("No userIds found in the specified time range");
+            return [];
           }
         } catch (error) {
           console.error("Error al ejecutar la consulta:", error);
@@ -151,7 +186,12 @@ const resolversDef = {
       },
       
   
-  
+  /**
+   * 
+   * @param parent 
+   * @param String
+   * @returns Obtener los mejores usuarios por tipo y país en un rango de tiempo
+   */
       getTopUsersByTypeAndCountry: async (parent, { type, countryId, startTime, endTime }) => {
         try {
           const data = await prisma.user.findMany({
